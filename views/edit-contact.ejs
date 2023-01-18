@@ -32,7 +32,8 @@
 						</div>
 						<div class="mb-3">
 							<label for="image" class="form-label">Update Image</label>
-							<input class="form-control w-50" type="file" name="image" placeholder="why">
+							<input class="form-control w-50" type="file" name="image"
+								value="<%=contact.img.data.toString('base64')%>">
 							<img class="images-up w-25 p-3"
 								src="data:/<%=contact.img.contentType%>;base64,<%=contact.img.data.toString('base64')%>">
 						</div>
