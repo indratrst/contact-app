@@ -2,30 +2,74 @@
 	<div class="row">
 		<div class="col-md-8">
 			<h2>Detail Contact</h2>
-			<% if (!contact) { %>
-			<div class="alert alert-danger fw-bold" role="alert">
-				Data contact tidak ada.
-				<a href="/contact" class="alert-link fw-normal"
-					><br />
-					Back to contact</a
-				>
-			</div>
-			<% } else {%>
-			<div class="card" style="width: 18rem">
-				<div class="card-body">
-					<h5 class="card-title"><%= contact.nama %></h5>
-					<h6 class="card-subtitle mb-2 text-muted"><%= contact.nohp %></h6>
-					<p class="card-text"><%= contact.email %></p>
-					<a href="/contact/edit/<%=contact.nama%>" class="btn btn-info badge">Ubah</a>
-					<!-- <a href="/contact/delete/<%=contact.nama%>" class="btn btn-danger badge" onclick="return confirm('Yakin');">Hapus</a> -->
-					<form method="POST" action="/contact?_method=DELETE" class="d-inline">
-						<input type="hidden" name="nama" value="<%=contact.nama%>" />
-						<button type="submit" class="btn btn-danger badge" onclick="return confirm('Yakin');">Hapus</button>
-					</form>
-					<a href="/contact" class="card-link d-block mt-3">&laquo; Back to contact</a>
+			<!-- <% if (!contact) { %>
+				<div class="alert alert-danger fw-bold" role="alert">
+					Data contact tidak ada.
+					<a href="/contact" class="alert-link fw-normal"><br />
+						Back to contact</a>
 				</div>
-			</div>
-			<% } %>
+				<% } else {%>
+					<div class="card" style="width: 100px">
+						<img src="data:/<%=contact.img.contentType%>;base64,<%=contact.img.data.toString('base64')%>"
+							class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">
+								<%= contact.nama %>
+							</h5>
+							<h6 class="card-subtitle mb-2 text-muted">
+								<%= contact.nohp %>
+							</h6>
+							<p class="card-text">
+								<%= contact.email %>
+							</p>
+							<a href="/contact/edit/<%=contact.nama%>" class="btn btn-info badge">Ubah</a> -->
+			<!-- no use <a href="/contact/delete/<%=contact.nama%>" class="btn btn-danger badge" onclick="return confirm('Yakin');">Hapus</a> -->
+			<!-- <form method="POST" action="/contact?_method=DELETE" class="d-inline">
+								<input type="hidden" name="nama" value="<%=contact.nama%>" />
+								<button type="submit" class="btn btn-danger badge" onclick="return confirm('Yakin');">Hapus</button>
+							</form>
+							<a href="/contact" class="card-link d-block mt-3">&laquo; Back to contact</a>
+						</div>
+					</div>
+					<% } %> -->
+
+			<% if (!contact) { %>
+				<div class="alert alert-danger fw-bold" role="alert">
+					Data contact tidak ada.
+					<a href="/contact" class="alert-link fw-normal"><br />
+						Back to contact</a>
+				</div>
+				<% } else {%>
+					<div class="card mb-3" style="max-width: 540px;">
+						<div class="row g-0">
+							<div class="col-md-4">
+								<img src="data:/<%=contact.img.contentType%>;base64,<%=contact.img.data.toString('base64')%>"
+									class="img-fluid rounded-start" alt="...">
+							</div>
+							<div class="col-md-8 position-relative">
+								<div class="card-body">
+									<h5 class="card-title">
+										Nama : <%= contact.nama %>
+									</h5>
+									<h6 class="card-subtitle mb-2 text-muted">
+										No hp : <%= contact.nohp %>
+									</h6>
+									<p class="card-text">
+										Email : <%= contact.email %>
+									</p>
+								</div>
+								<div class="wrap-btns position-absolute bottom-0 start-50 translate-middle-x">
+									<a href="/contact/edit/<%=contact.nama%>" class="btn btn-info badge">Ubah</a>
+									<form method="POST" action="/contact?_method=DELETE" class="d-inline">
+										<input type="hidden" name="nama" value="<%=contact.nama%>" />
+										<button type="submit" class="btn btn-danger badge" onclick="return confirm('Yakin');">Hapus</button>
+									</form>
+									<a href="/contact" class="card-link d-block mt-3">&laquo; Back to contact</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<% } %>
 		</div>
 	</div>
 </div>

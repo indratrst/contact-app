@@ -15,7 +15,7 @@
 				</div>
 
 				<% } %>
-					<form method="post" action="/contact">
+					<form method="post" action="/contact" enctype="multipart/form-data">
 						<div class="mb-3">
 							<label for="nama" class="form-label">Nama</label>
 							<input type="text" class="form-control" id="nama" name="nama" required />
@@ -30,7 +30,7 @@
 						</div>
 						<div class="mb-3">
 							<label for="image" class="form-label">Add Image</label>
-							<input class="form-control" type="file" id="image">
+							<input class="form-control" type="file" id="image" name="image" required value="">
 						</div>
 
 						<button type="submit" class="btn btn-primary">Tambah Data Contact</button>

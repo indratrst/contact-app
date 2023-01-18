@@ -1,0 +1,11 @@
+.images-up {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  object-position: center;
+  scale: 1.1;
+}
+
+.btn-edit {
+  margin-bottom: 200px;
+}

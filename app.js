@@ -3,11 +3,20 @@ const expressLayouts = require("express-ejs-layouts");
 const { check, body, validationResult } = require("express-validator");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+// const bodyParser = require('body-parser');
+
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 
 require("./utils/db");
 const Contact = require("./model/contact");
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
+require('dotenv/config');
+const multer = require('multer');
+
+
 const { updateOne } = require("./model/contact");
 // const { findOne } = require("./model/contact");
 const app = express();
@@ -22,6 +31,7 @@ app.use(expressLayouts);
 // Build in Middleware
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 
 // konfigurasi flash
 app.use(cookieParser("secret"));
@@ -90,8 +100,21 @@ app.get("/contact/add", (req, res) => {
 });
 
 // proses tambah data contact
+
+
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, 'uploads')
+	},
+	filename: (req, file, cb) => {
+		cb(null, file.fieldname + '-' + Date.now())
+	}
+});
+
+const upload = multer({ storage: storage });
+
 app.post(
-	"/contact",
+	"/contact", upload.single('image'),
 	[
 		body("nama").custom(async (value) => {
 			const duplikat = await Contact.findOne({ nama: value });
@@ -103,7 +126,7 @@ app.post(
 		check("email", "Email Tidak Valid").isEmail(),
 		check("nohp", "No Hp Tidak Valid").isMobilePhone("id-ID"),
 	],
-	(req, res) => {
+	(req, res, next) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			res.render("add-contact", {
@@ -112,7 +135,16 @@ app.post(
 				errors: errors.array(),
 			});
 		} else {
-			Contact.insertMany(req.body, (error, result) => {
+			const obj = {
+				nama: req.body.nama,
+				email: req.body.email,
+				nohp: req.body.nohp,
+				img: {
+					data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+					contentType: 'image/png'
+				}
+			}
+			Contact.insertMany(obj, (error, result) => {
 				//  kirim flash message
 				req.flash("msg", "Data Contact berhasil ditambahkan");
 				res.redirect("/contact");
@@ -158,8 +190,9 @@ app.get("/contact/edit/:nama", async (req, res) => {
 	});
 });
 // proses ubah data contact
+
 app.put(
-	"/contact",
+	"/contact", upload.single("image"),
 	[
 		body("nama").custom(async (value, { req }) => {
 			const duplikat = await Contact.findOne({ nama: value });
@@ -171,7 +204,7 @@ app.put(
 		check("email", "Email Tidak Valid").isEmail(),
 		check("nohp", "No Hp Tidak Valid").isMobilePhone("id-ID"),
 	],
-	(req, res) => {
+	(req, res, next) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			res.render("edit-contact", {
@@ -188,6 +221,10 @@ app.put(
 						nama: req.body.nama,
 						email: req.body.email,
 						nohp: req.body.nohp,
+						img: {
+							data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+							contentType: 'image/png'
+						}
 					},
 				}
 			).then((result) => {
@@ -210,6 +247,7 @@ app.get("/contact/:nama", async (req, res) => {
 		contact,
 	});
 });
+
 
 app.listen(port, () => {
 	console.log(`Mongo Contact App | listening  at http://localhost:${port}`);
