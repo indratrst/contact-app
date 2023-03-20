@@ -17,7 +17,7 @@ require('dotenv/config');
 const multer = require('multer');
 
 
-const { updateOne } = require("./model/contact");
+// const { updateOne } = require("./model/contact");
 // const { findOne } = require("./model/contact");
 const app = express();
 const port = 3000;
@@ -30,7 +30,7 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 // Build in Middleware
 app.use(express.static("public"));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
 // konfigurasi flash
@@ -94,24 +94,34 @@ app.get("/contact", async (req, res) => {
 // Halaman form tambah data contact
 app.get("/contact/add", (req, res) => {
 	res.render("add-contact", {
-		title: "Form Tambah Data Contact",
 		layout: "layouts/main-layout",
+		title: "Form Tambah Data Contact",
 	});
 });
 
 // proses tambah data contact
 
+//define storage for the images
 
 const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, 'uploads')
+	//destination for files
+	destination: function (request, file, callback) {
+		callback(null, './public/uploads/image');
 	},
-	filename: (req, file, cb) => {
-		cb(null, file.fieldname + '-' + Date.now())
-	}
+
+	//add back the extension
+	filename: function (request, file, callback) {
+		callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+	},
 });
 
-const upload = multer({ storage: storage });
+//upload parameters for multer
+const upload = multer({
+	storage: storage,
+	limits: {
+		fieldSize: 1024 * 1024 * 3,
+	},
+});
 
 app.post(
 	"/contact", upload.single('image'),
@@ -135,14 +145,12 @@ app.post(
 				errors: errors.array(),
 			});
 		} else {
-			const obj = {
+			// console.log(req.file);
+			let obj = {
 				nama: req.body.nama,
 				email: req.body.email,
 				nohp: req.body.nohp,
-				img: {
-					data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
-					contentType: 'image/png'
-				}
+				image: req.file.filename,
 			}
 			Contact.insertMany(obj, (error, result) => {
 				//  kirim flash message
@@ -172,12 +180,22 @@ app.post(
 // 	}
 // });
 
-app.delete("/contact", (req, res) => {
-	Contact.deleteOne({ nama: req.body.nama }).then((result) => {
-		req.flash("msg", "Data Contact Berhasil dihapus");
-		res.redirect("/contact");
-	});
-});
+// app.delete("/contact", (req, res) => {
+
+// 	Contact.deleteOne({ nama: req.body.nama }).then((result) => {
+// 		if (req.body.old_image != "") {
+// 			try {
+// 				fs.unlinkSync("./public/uploads/image/" + req.body.old_image)
+// 			} catch (error) {
+// 				console.log(error);
+// 			}
+// 		}
+// 		req.flash("msg", "Data Contact Berhasil dihapus");
+// 		res.redirect("/contact");
+// 	});
+// });
+
+
 
 // Edit data
 // form ubah data contact
@@ -214,6 +232,17 @@ app.put(
 				contact: req.body,
 			});
 		} else {
+			let new_image = "";
+			if (req.file) {
+				new_image = req.file.filename;
+				try {
+					fs.unlinkSync("./public/uploads/image" + req.body.old_image)
+				} catch (error) {
+					console.log(error);
+				}
+			} else {
+				new_image = req.body.old_image;
+			}
 			Contact.updateOne(
 				{ _id: req.body._id },
 				{
@@ -221,10 +250,7 @@ app.put(
 						nama: req.body.nama,
 						email: req.body.email,
 						nohp: req.body.nohp,
-						img: {
-							data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
-							contentType: 'image/png'
-						}
+						image: new_image,
 					},
 				}
 			).then((result) => {
@@ -235,6 +261,25 @@ app.put(
 		}
 	}
 );
+
+app.get("/contact/delete/:id", (req, res) => {
+	let id = req.params.id;
+	Contact.findByIdAndRemove(id, (err, result) => {
+		if (result.image != "") {
+			try {
+				fs.unlinkSync("./public/uploads/image/" + result.image)
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		if (err) {
+			res.json({ message: err.message });
+		} else {
+			req.flash("msg", "Data Contact Berhasil dihapus");
+		}
+		res.redirect("/contact");
+	});
+});
 
 // Halaman detail contact
 app.get("/contact/:nama", async (req, res) => {
@@ -247,6 +292,7 @@ app.get("/contact/:nama", async (req, res) => {
 		contact,
 	});
 });
+
 
 
 app.listen(port, () => {

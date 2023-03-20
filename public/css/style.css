@@ -9,3 +9,27 @@
 .btn-edit {
   margin-bottom: 200px;
 }
+
+
+.form-image {
+  border: 1px solid #ccc;
+  display: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.form-image::file-selector-buttons {
+  font-weight: bold;
+  color: dodgerblue;
+  padding: 0.5em;
+  border: thin solid grey;
+  border-radius: 3px;
+}
+
+.add-image::file-selector-button {
+  font-weight: bold;
+  color: dodgerblue;
+  padding: 0.5em;
+  border: thin solid grey;
+  border-radius: 3px;
+}

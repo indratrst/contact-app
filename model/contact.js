@@ -13,7 +13,7 @@ const mongoose = require("mongoose");
 // 	email: {
 // 		type: String,
 // 	},
-// 	img: {
+// 	image: {
 // 		data: Buffer,
 // 		contentType: String
 // 	},
@@ -23,13 +23,21 @@ const mongoose = require("mongoose");
 
 
 const contactSchema = new mongoose.Schema({
-	nama: String,
-	nohp: String,
-	email: String,
-	img:
+	nama: {
+		type: String,
+		required: true,
+	},
+	nohp: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+	},
+	image:
 	{
-		data: Buffer,
-		contentType: String
+		type: String,
+		default: 'image_not_found.png',
 	}
 });
 

@@ -32,18 +32,21 @@
 												<%= i %>
 											</th>
 											<td>
-												<img class="images-up rounded-circle"
-													src="data:/<%=contact.img.contentType%>;base64,<%=contact.img.data.toString('base64')%>">
+												<image class="images-up rounded-circle" src="/uploads/image/<%=contact.image%>">
 											</td>
 											<td>
-												<%= contact.nama %>
+												<%=contact.nama%>
 											</td>
 											<td>
-												<%= contact.nohp %>
+												<%=contact.nohp%>
 											</td>
 											<td>
-												<a href="/contact/<%=contact.nama%> " class="btn btn-success badge rounded-pill"><i
+												<a href="/contact/<%=contact.nama%>" class="btn btn-success badge rounded-pill"><i
 														class="bi bi-info-circle"></i> Detail</a>
+											</td>
+											<td>
+												<a href="/contact/delete/<%=contact.id%>" class="btn btn-danger badge rounded-pill"><i
+														class="bi bi-info-circle"></i>Delete</a>
 											</td>
 										</tr>
 										<% }) %>

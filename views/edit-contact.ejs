@@ -16,6 +16,11 @@
 
 				<% } %>
 					<form method="post" action="/contact/?_method=PUT" enctype="multipart/form-data">
+						<div class="mb-3">
+							<label for="image" class="form-label btn btn-primary">Update Image</label>
+							<input class="form-image" type="file" id="image" name="image">
+							<image class="w-25 p-3" src="/uploads/image/<%=contact.image%>">
+						</div>
 						<input type="hidden" name="_id" value="<%=contact._id%>" />
 						<input type="hidden" name="oldNama" value="<%=contact.oldNama || contact.nama %>" />
 						<div class="mb-2">
@@ -30,14 +35,9 @@
 							<label for="nohp" class="form-label">No Hp</label>
 							<input type="text" class="form-control" id="nohp" name="nohp" required value="<%=contact.nohp%>" />
 						</div>
-						<div class="mb-3">
-							<label for="image" class="form-label">Update Image</label>
-							<input class="form-control w-50" type="file" name="image"
-								value="<%=contact.img.data.toString('base64')%>">
-							<img class="images-up w-25 p-3"
-								src="data:/<%=contact.img.contentType%>;base64,<%=contact.img.data.toString('base64')%>">
-						</div>
-						<button type="submit" class="btn btn-primary mb-5">Ubah
+
+						<input class="d-none" name="old_image" value="<%=contact.image%>">
+						<button type=" submit" class="btn btn-primary mb-5">Ubah
 							Data
 							Contact</button>
 					</form>
