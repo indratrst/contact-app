@@ -214,6 +214,7 @@ app.put(
 	[
 		body("nama").custom(async (value, { req }) => {
 			const duplikat = await Contact.findOne({ nama: value });
+			console.log({dup:duplikat})
 			if (value !== req.body.oldNama && duplikat) {
 				throw new Error("Nama kontak sudah terdaftar");
 			}
@@ -222,7 +223,7 @@ app.put(
 		check("email", "Email Tidak Valid").isEmail(),
 		check("nohp", "No Hp Tidak Valid").isMobilePhone("id-ID"),
 	],
-	(req, res, next) => {
+	async (req, res, next) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			res.render("edit-contact", {
@@ -232,11 +233,14 @@ app.put(
 				contact: req.body,
 			});
 		} else {
+			const data = await Contact.findOne({_id : req.body.id});
+			console.log(data);
 			let new_image = "";
 			if (req.file) {
 				new_image = req.file.filename;
+				console.log({Ba:new_image})
 				try {
-					fs.unlinkSync("./public/uploads/image" + req.body.old_image)
+					fs.unlinkSync("./public/uploads/image/" + req.body.old_image)
 				} catch (error) {
 					console.log(error);
 				}

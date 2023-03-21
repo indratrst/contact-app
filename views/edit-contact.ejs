@@ -21,6 +21,7 @@
 							<input class="form-image" type="file" id="image" name="image">
 							<image class="w-25 p-3" src="/uploads/image/<%=contact.image%>">
 						</div>
+						<input class="d-none" name="old_image" value="<%=contact.image%>">
 						<input type="hidden" name="_id" value="<%=contact._id%>" />
 						<input type="hidden" name="oldNama" value="<%=contact.oldNama || contact.nama %>" />
 						<div class="mb-2">
@@ -36,7 +37,6 @@
 							<input type="text" class="form-control" id="nohp" name="nohp" required value="<%=contact.nohp%>" />
 						</div>
 
-						<input class="d-none" name="old_image" value="<%=contact.image%>">
 						<button type=" submit" class="btn btn-primary mb-5">Ubah
 							Data
 							Contact</button>

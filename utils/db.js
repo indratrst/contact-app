@@ -4,6 +4,7 @@ mongoose.connect("mongodb://localhost:127.0.0.1/db", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useCreateIndex: true,
+	useFindAndModify:false
 });
 
 // // Menambah satu data
